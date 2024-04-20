@@ -1,6 +1,7 @@
 package com.example.bookworm.viewModels
 
 import android.util.Log
+import com.example.bookworm.BookData
 import com.example.bookworm.api.BookApiService
 import com.example.bookworm.model.BookDataResponse
 import com.example.bookworm.model.VolumeInfo
@@ -26,6 +27,7 @@ class BookContent {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(BookApiService::class.java)
+        Log.d("Books", "onResponse: lalala")
 
 
         api.BookApiStatus(
@@ -34,21 +36,21 @@ class BookContent {
             "gzip, deflate, br",
             "keep-alive"
         ).enqueue(
-            object : Callback<VolumeInfo> {
+            object : Callback<BookData> {
                 override fun onResponse(
-                    call: Call<VolumeInfo>,
-                    response: Response<VolumeInfo>
+                    call: Call<BookData>,
+                    response: Response<BookData>
                 ) {
-                    Log.d("Books", "onResponse: ${response.code()}")
-                    if( response.isSuccessful){
+                    Log.d("Books", "onResponse1: ${response.code()}")
+                    if (response.isSuccessful) {
                         val responseData = response.body()
                         Log.i("Books", "onResponse: $responseData")
-                        responseData?.let {volumeInfo ->
+                        responseData?.let { volumeInfo ->
 
                             // Now you can access properties of volumeInfoObject
-                            Log.d("Books", "Title: ${volumeInfo.title}")
-                            Log.d("Books", "Authors: ${volumeInfo.authors}")
-                            Log.d("Books", "Categories: ${volumeInfo.categories}")
+                            Log.d("Books", "Title: ${volumeInfo.items}")
+                            Log.d("Books", "Authors: ${volumeInfo.kind}")
+                            Log.d("Books", "Categories: ${volumeInfo.totalItems}")
                         }
                     } else {
                         val responseData = response.body()
@@ -56,8 +58,8 @@ class BookContent {
                     }
                 }
 
-                override fun onFailure(call: Call<VolumeInfo>, t: Throwable) {
-                    Log.i("Books", "onFailure: ${t.message}")
+                override fun onFailure(call: Call<BookData>, t: Throwable) {
+                    Log.i("Books", "onResponse: ${t.message}")
                 }
 
             }

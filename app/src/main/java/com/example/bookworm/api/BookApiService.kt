@@ -1,5 +1,6 @@
 package com.example.bookworm.api
 
+import com.example.bookworm.BookData
 import com.example.bookworm.model.BookDataResponse
 import com.example.bookworm.model.VolumeInfo
 import retrofit2.Call
@@ -15,5 +16,5 @@ interface BookApiService {
         @Header("Accept") headerValue2: String,
         @Header("Accept-Encoding") headerValue3: String,
         @Header("Connection") headerValue4: String
-    ) : Call<VolumeInfo>
+    ) : Call<BookData>
 }
