@@ -3,7 +3,6 @@ package com.example.bookworm.viewModels
 import android.util.Log
 import com.example.bookworm.BookData
 import com.example.bookworm.api.BookApiService
-import com.example.bookworm.model.BookDataResponse
 import com.example.bookworm.model.VolumeInfo
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -30,17 +29,13 @@ class BookContent {
         Log.d("Books", "onResponse: lalala")
 
 
-        api.BookApiStatus(
-            "application/json",
-            "*/*",
-            "gzip, deflate, br",
-            "keep-alive"
-        ).enqueue(
+        api.BookApiStatus().enqueue(
             object : Callback<BookData> {
                 override fun onResponse(
                     call: Call<BookData>,
                     response: Response<BookData>
                 ) {
+                    Log.d("Books", "dzfbdxfb")
                     Log.d("Books", "onResponse1: ${response.code()}")
                     if (response.isSuccessful) {
                         val responseData = response.body()
@@ -48,18 +43,17 @@ class BookContent {
                         responseData?.let { volumeInfo ->
 
                             // Now you can access properties of volumeInfoObject
-                            Log.d("Books", "Title: ${volumeInfo.items}")
-                            Log.d("Books", "Authors: ${volumeInfo.kind}")
-                            Log.d("Books", "Categories: ${volumeInfo.totalItems}")
+                            Log.d("Books", "Title: ${volumeInfo.kind}")
+                            Log.d("Books", "Authors: ${volumeInfo.totalItems}")
+                            Log.d("Books", "Categories: ${volumeInfo.items}")
                         }
                     } else {
                         val responseData = response.body()
                         Log.i("Books", "onResponse: $responseData")
                     }
                 }
-
                 override fun onFailure(call: Call<BookData>, t: Throwable) {
-                    Log.i("Books", "onResponse: ${t.message}")
+                    Log.i("Books", "onResponse: failed")
                 }
 
             }
