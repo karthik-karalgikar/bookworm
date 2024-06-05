@@ -1,5 +1,6 @@
 package com.example.bookworm.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -38,9 +40,11 @@ import com.example.bookworm.viewModels.BookContent
 @Composable
 fun SignInScreen(){
 
-    val phoneNumber = PhoneNumber()
+    val context = LocalContext.current as Activity
+    val phoneNumber = PhoneNumber(context)
     var phoneNo by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
     var bookcontent = BookContent()
 
     Surface(modifier = Modifier
@@ -130,23 +134,54 @@ fun SignInScreen(){
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                text = "Enter OTP",
-                style = TextStyle(
-                    fontSize = 34.sp,
-                    lineHeight = 38.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight(400),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-            )
+//            Text(
+//                text = "Enter OTP",
+//                style = TextStyle(
+//                    fontSize = 34.sp,
+//                    lineHeight = 38.sp,
+//                    fontFamily = FontFamily.SansSerif,
+//                    fontWeight = FontWeight(400),
+//                    color = Color.Black,
+//                    textAlign = TextAlign.Center
+//                )
+//            )
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            OtpTextFieldScreen(onVerifyClick = { otp ->
-                    verifyOtp(otp = otp)
-            })
+            OutlinedTextField(
+                value = otp,
+                onValueChange = { otp = it },
+                label = { Text("Enter OTP") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(Color.Black),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+
+            Button(
+                onClick = {
+                    phoneNumber.verifyCode(otp)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black
+                )
+            ) {
+                Text(
+                    text = "Verify OTP",
+                    style = TextStyle(
+                        fontSize = 34.sp,
+                        lineHeight = 38.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight(400),
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+
+//            OtpTextFieldScreen(onVerifyClick = { otp ->
+//                    verifyOtp(otp = otp)
+//            })
 
 
         }
