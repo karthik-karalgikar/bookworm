@@ -40,12 +40,22 @@ class BookContent {
                     if (response.isSuccessful) {
                         val responseData = response.body()
                         Log.i("Books", "onResponse: $responseData")
-                        responseData?.let { volumeInfo ->
+                        responseData?.let { bookData ->
+                            bookData.items?.forEach { item ->
+                                val volumeInfo = item.volumeInfo
+                                val title = volumeInfo.title
+                                val author = volumeInfo.authors?.joinToString(", ")
+                                val categories = volumeInfo.categories?.joinToString(", ")
 
-                            // Now you can access properties of volumeInfoObject
-                            Log.d("Books", "Title: ${volumeInfo.kind}")
-                            Log.d("Books", "Authors: ${volumeInfo.totalItems}")
-                            Log.d("Books", "Categories: ${volumeInfo.items}")
+                                Log.d("Books", "Title: $title")
+                                Log.d("Books", "Authors: $author")
+                                Log.d("Books", "Categories: $categories")
+                            }
+
+//                            // Now you can access properties of volumeInfoObject
+//                            Log.d("Books", "Kind: ${bookData.kind}")
+//                            Log.d("Books", "Total : ${bookData.totalItems}")
+//                            Log.d("Books", "Items: ${bookData.items}")
                         }
                     } else {
                         val responseData = response.body()
