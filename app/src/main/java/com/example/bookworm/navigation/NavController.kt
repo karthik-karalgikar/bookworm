@@ -10,7 +10,7 @@ import com.example.bookworm.screens.SignInScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = "sign_in") {
+    NavHost(navController, startDestination = "search") {
         composable("sign_in") { SignInScreen(navController) }
         composable("search") { SearchBooks() }
     }

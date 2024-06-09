@@ -17,6 +17,7 @@ import com.example.bookworm.ui.theme.BookwormTheme
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.initialize
 
@@ -24,9 +25,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val db = Firebase.firestore
+
 
         Firebase.initialize(context = this)
+        val db = FirebaseFirestore.getInstance()
         Firebase.appCheck.installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )

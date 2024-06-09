@@ -39,6 +39,8 @@ import com.example.bookworm.verify.OtpTextFieldScreen
 import com.example.bookworm.verify.PhoneNumber
 import com.example.bookworm.verify.verifyOtp
 import com.example.bookworm.viewModels.BookContent
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.callbackFlow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +52,7 @@ fun SignInScreen(navController: NavController){
     var phoneNo by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var otp by remember { mutableStateOf("") }
+    val db = FirebaseFirestore.getInstance()
 
     Surface(modifier = Modifier
         .fillMaxSize()
@@ -145,7 +148,9 @@ fun SignInScreen(navController: NavController){
             Button(
                 onClick = {
                     phoneNumber.verifyCode(otp) {
-                        navController.navigate("search")
+                        saveUsernameToFirestore(db, username){
+                            navController.navigate("search")
+                        }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -164,13 +169,22 @@ fun SignInScreen(navController: NavController){
                     )
                 )
             }
-
-//            OtpTextFieldScreen(onVerifyClick = { otp ->
-//                    verifyOtp(otp = otp)
-//            })
-
-
         }
-
     }
+}
+
+fun saveUsernameToFirestore(db: FirebaseFirestore, username: String, callback: () -> Unit){
+    val user = hashMapOf(
+        "username" to username
+    )
+
+    db.collection("users")
+        .add(user)
+        .addOnSuccessListener { documentReference ->
+            println("DocumentSnapshot added with ID: ${documentReference.id}")
+            callback()
+        }
+        .addOnFailureListener { e ->
+            println("Error adding document: $e")
+        }
 }
