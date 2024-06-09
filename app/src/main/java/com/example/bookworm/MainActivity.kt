@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.bookworm.navigation.AppNavHost
 import com.example.bookworm.screens.SignInScreen
 import com.example.bookworm.ui.theme.BookwormTheme
 import com.google.firebase.Firebase
@@ -31,7 +33,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BookwormTheme {
-                SignInScreen()
+                val navController = rememberNavController()
+                AppNavHost(navController)
             }
         }
     }

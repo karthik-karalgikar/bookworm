@@ -15,8 +15,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.bookworm.ItemsItem
+import com.example.bookworm.model.BookList
 import com.example.bookworm.verify.OtpTextFieldScreen
 import com.example.bookworm.verify.PhoneNumber
 import com.example.bookworm.verify.verifyOtp
@@ -38,14 +43,13 @@ import com.example.bookworm.viewModels.BookContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(){
+fun SignInScreen(navController: NavController){
 
     val context = LocalContext.current as Activity
     val phoneNumber = PhoneNumber(context)
     var phoneNo by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var otp by remember { mutableStateOf("") }
-    var bookcontent = BookContent()
 
     Surface(modifier = Modifier
         .fillMaxSize()
@@ -67,6 +71,7 @@ fun SignInScreen(){
                     .fillMaxWidth()
                     .padding(16.dp)
             )
+
 //            Text(
 //                text = "Enter Username",
 //                style = TextStyle(
@@ -110,27 +115,6 @@ fun SignInScreen(){
                     )
                 )
             }
-            Button(
-                onClick = {
-                    bookcontent.getBookContent()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black
-                )
-//                enabled = phoneNo.length == 10
-            ) {
-                Text(
-                    text = "Search books",
-                    style = TextStyle(
-                        fontSize = 34.sp,
-                        lineHeight = 38.sp,
-                        fontFamily = FontFamily.SansSerif,
-                        fontWeight = FontWeight(400),
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                )
-            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -160,7 +144,9 @@ fun SignInScreen(){
 
             Button(
                 onClick = {
-                    phoneNumber.verifyCode(otp)
+                    phoneNumber.verifyCode(otp) {
+                        navController.navigate("search")
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black

@@ -14,6 +14,7 @@ class PhoneNumber(private val activity: Activity) {
     val auth = FirebaseAuth.getInstance()
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+    private var onSuccessCallback: (() -> Unit)? = null
 
     fun sendOtpToPhoneNumber(phoneNumber: String) {
         val options = PhoneAuthOptions.newBuilder(auth)
@@ -29,7 +30,7 @@ class PhoneNumber(private val activity: Activity) {
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
             Log.d("Phone", "Verification Completed: $credential")
-            signInWithPhoneAuthCredential(credential)
+            onSuccessCallback?.let { signInWithPhoneAuthCredential(credential, it) }
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
@@ -50,11 +51,12 @@ class PhoneNumber(private val activity: Activity) {
         }
     }
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, onSuccess: (() -> Unit)?) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     Log.d("Phone", "signInWithCredential: success")
+                    onSuccess?.invoke()
                     val user = task.result?.user
                 } else {
                     Log.w("Phone", "signInWithCredential: failure", task.exception)
@@ -62,8 +64,9 @@ class PhoneNumber(private val activity: Activity) {
             }
     }
 
-    fun verifyCode(code: String) {
+    fun verifyCode(code: String, onSuccess: () -> Unit) {
+        onSuccessCallback = onSuccess
         val credential = PhoneAuthProvider.getCredential(storedVerificationId!!, code)
-        signInWithPhoneAuthCredential(credential)
+        signInWithPhoneAuthCredential(credential, onSuccessCallback!!)
     }
 }
