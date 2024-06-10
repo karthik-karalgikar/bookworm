@@ -29,16 +29,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.bookworm.ItemsItem
-import com.example.bookworm.model.BookList
 import com.example.bookworm.verify.OtpTextFieldScreen
 import com.example.bookworm.verify.PhoneNumber
-import com.example.bookworm.verify.verifyOtp
-import com.example.bookworm.viewModels.BookContent
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -51,6 +48,8 @@ fun SignInScreen(navController: NavController){
     val phoneNumber = PhoneNumber(context)
     var phoneNo by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var otp by remember { mutableStateOf("") }
     val db = FirebaseFirestore.getInstance()
 
@@ -75,19 +74,36 @@ fun SignInScreen(navController: NavController){
                     .padding(16.dp)
             )
 
-//            Text(
-//                text = "Enter Username",
-//                style = TextStyle(
-//                    fontSize = 34.sp,
-//                    lineHeight = 38.sp,
-//                    fontFamily = FontFamily.SansSerif,
-//                    fontWeight = FontWeight(400),
-//                    color = Color.Black,
-//                    textAlign = TextAlign.Center
-//                )
-//            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(value = password,
+                onValueChange = { password = it},
+                label = {Text("Set Password")},
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                visualTransformation = PasswordVisualTransformation()
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(value = password,
+                onValueChange = { password = it},
+                label = {Text("Set Password")},
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                visualTransformation = PasswordVisualTransformation()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
 
             OutlinedTextField(value = phoneNo,
                 onValueChange = { phoneNo = it},
@@ -120,20 +136,6 @@ fun SignInScreen(navController: NavController){
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-
-//            Text(
-//                text = "Enter OTP",
-//                style = TextStyle(
-//                    fontSize = 34.sp,
-//                    lineHeight = 38.sp,
-//                    fontFamily = FontFamily.SansSerif,
-//                    fontWeight = FontWeight(400),
-//                    color = Color.Black,
-//                    textAlign = TextAlign.Center
-//                )
-//            )
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             OutlinedTextField(
                 value = otp,

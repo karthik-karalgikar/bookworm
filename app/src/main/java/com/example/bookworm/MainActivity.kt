@@ -3,6 +3,7 @@ package com.example.bookworm
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bookworm.navigation.AppNavHost
 import com.example.bookworm.screens.SignInScreen
 import com.example.bookworm.ui.theme.BookwormTheme
+import com.example.bookworm.viewModels.InventoryViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
@@ -22,10 +24,9 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.initialize
 
 class MainActivity : ComponentActivity() {
+    private val inventoryViewModel: InventoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
 
         Firebase.initialize(context = this)
         val db = FirebaseFirestore.getInstance()
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BookwormTheme {
                 val navController = rememberNavController()
-                AppNavHost(navController)
+                AppNavHost(navController, inventoryViewModel)
             }
         }
     }
