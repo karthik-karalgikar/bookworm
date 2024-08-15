@@ -156,8 +156,12 @@ fun RegisterScreen(navController: NavController){
             Button(
                 onClick = {
                         phoneNumber.verifyCode(otp) {
-                            saveUsernameToFirestore(db, username, password){
-                                navController.navigate("search")
+                            saveUsernameToFirestore(db, username, password){ success, message ->
+                                if(success){
+                                    navController.navigate("login")
+                                } else {
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                 },
@@ -181,19 +185,36 @@ fun RegisterScreen(navController: NavController){
     }
 }
 
-fun saveUsernameToFirestore(db: FirebaseFirestore, username: String, password: String, callback: () -> Unit){
-    val user = hashMapOf(
-        "username" to username,
-        "password" to password
-    )
-
+fun saveUsernameToFirestore(db: FirebaseFirestore, username: String, password: String, callback: (success: Boolean, message: String) -> Unit){
     db.collection("users")
-        .add(user)
-        .addOnSuccessListener { documentReference ->
-            println("DocumentSnapshot added with ID: ${documentReference.id}")
-            callback()
+        .whereEqualTo("username", username)
+        .get()
+        .addOnSuccessListener { documents ->
+            if(documents.isEmpty){
+                val user = hashMapOf(
+                    "username" to username,
+                    "password" to password
+                )
+                db.collection("users")
+                    .add(user)
+                    .addOnSuccessListener { documentReference ->
+                        println("DocumentSnapshot added with ID: ${documentReference.id}")
+                        callback(true, "User registered successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        println("Error adding document: $e")
+                        callback(false, "User registration failed")
+                    }
+            }
+            else {
+                callback(false, "Username already registered")
+            }
+
         }
         .addOnFailureListener { e ->
             println("Error adding document: $e")
+            callback(false, "Error checking username availability")
         }
+
+
 }
