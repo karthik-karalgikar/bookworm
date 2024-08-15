@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.bookworm.navigation.AppNavHost
-import com.example.bookworm.screens.SignInScreen
+import com.example.bookworm.screens.RegisterScreen
 import com.example.bookworm.ui.theme.BookwormTheme
 import com.example.bookworm.viewModels.InventoryViewModel
 import com.google.firebase.Firebase

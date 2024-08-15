@@ -1,6 +1,7 @@
 package com.example.bookworm.screens
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +16,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,15 +33,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.bookworm.verify.OtpTextFieldScreen
 import com.example.bookworm.verify.PhoneNumber
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.callbackFlow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavController){
+fun RegisterScreen(navController: NavController){
 
     val context = LocalContext.current as Activity
     val phoneNumber = PhoneNumber(context)
@@ -63,7 +60,8 @@ fun SignInScreen(navController: NavController){
             .background(Color.LightGray)
         ){
 
-            OutlinedTextField(value = username,
+            OutlinedTextField(
+                value = username,
                 onValueChange = { username = it},
                 label = {Text("Enter Username")},
                 colors = OutlinedTextFieldDefaults.colors(
@@ -76,7 +74,8 @@ fun SignInScreen(navController: NavController){
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(value = password,
+            OutlinedTextField(
+                value = password,
                 onValueChange = { password = it},
                 label = {Text("Set Password")},
                 colors = OutlinedTextFieldDefaults.colors(
@@ -90,9 +89,10 @@ fun SignInScreen(navController: NavController){
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(value = password,
-                onValueChange = { password = it},
-                label = {Text("Set Password")},
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = {Text("Confirm Password")},
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                 ),
@@ -101,6 +101,12 @@ fun SignInScreen(navController: NavController){
                     .padding(16.dp),
                 visualTransformation = PasswordVisualTransformation()
             )
+
+            if (confirmPassword != password){
+                Toast.makeText(context, "Passwords do not match, Please try again", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, "Passwords match!", Toast.LENGTH_LONG).show()
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -149,11 +155,11 @@ fun SignInScreen(navController: NavController){
 
             Button(
                 onClick = {
-                    phoneNumber.verifyCode(otp) {
-                        saveUsernameToFirestore(db, username){
-                            navController.navigate("search")
+                        phoneNumber.verifyCode(otp) {
+                            saveUsernameToFirestore(db, username, password){
+                                navController.navigate("search")
+                            }
                         }
-                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black
@@ -175,9 +181,10 @@ fun SignInScreen(navController: NavController){
     }
 }
 
-fun saveUsernameToFirestore(db: FirebaseFirestore, username: String, callback: () -> Unit){
+fun saveUsernameToFirestore(db: FirebaseFirestore, username: String, password: String, callback: () -> Unit){
     val user = hashMapOf(
-        "username" to username
+        "username" to username,
+        "password" to password
     )
 
     db.collection("users")
