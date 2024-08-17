@@ -13,7 +13,7 @@ import com.example.bookworm.viewModels.InventoryViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController, inventoryViewModel: InventoryViewModel) {
-    NavHost(navController, startDestination = "register") {
+    NavHost(navController, startDestination = "login") {
         composable("register") { RegisterScreen(navController) }
         composable("login") { LoginScreen(navController)}
         composable("search") { SearchBooks(navController, inventoryViewModel) }

@@ -158,7 +158,7 @@ fun RegisterScreen(navController: NavController){
                         phoneNumber.verifyCode(otp) {
                             saveUsernameToFirestore(db, username, password){ success, message ->
                                 if(success){
-                                    navController.navigate("login")
+                                    navController.navigate("search")
                                 } else {
                                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                                 }
